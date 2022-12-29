@@ -1,0 +1,74 @@
+1
+
+SELECT * FROM person,HES,systemmm where HES."vacInfo"='vaccinated' and (HES."hesCode"=person."hesCode")
+and (person."city" LIKE 'G%' OR person."city" LIKE 'V%') and systemmm."vaccination_date">'2021-06-16' 
+and systemmm."personId"=person."personid";
+
+2
+
+SELECT * FROM systemmm INNER JOIN person ON systemmm."personId" =
+person."personid"
+WHERE person.age > 50 AND systemmm."vaccinename" = 'Biontech'
+
+3
+
+ALTER TABLE systemmm
+ADD "Country_Code" varchar(10) NOT NULL DEFAULT 'TR'
+
+4
+
+SELECT Count(vaccinename) AS numberOfPerson,vaccinename AS TypeOfVas
+FROM systemmm
+GROUP BY vaccinename
+
+5
+
+SELECT * FROM systemmm INNER JOIN person ON systemmm."personId" = 
+person."personid" INNER JOIN healthcare_pro ON 
+systemmm."healthcare_pro_id" = healthcare_pro."id" INNER
+JOIN medcen ON medcen."medcenId" =
+healthcare_pro."medcen_id"
+WHERE medical_center."medcenName"='Dokuz Eylül University Hospital'
+ORDER BY person."age" ASC
+FETCH FIRST 1 ROW ONLY;
+
+6
+
+SELECT systemmm."vaccinename",systemmm."vaccination_data",medcen."medcenName" FROM
+systemmm INNER JOIN person ON systemmm."personId" =
+person."personid" INNER JOIN healthcare_pro ON 
+systemmm."healthcare_pro_id" = healthcare_pro."id" INNER
+JOIN medcen ON medcen."medcenId" =
+healthcare_pro."id"
+WHERE person."name"'Ali' AND person."surname"='Aslan'
+
+7
+
+select "city",count("city") from HES 
+ INNER JOIN person on HES."health_situation"='risky' and person."personid"=HES."personId"
+ group by person."city"
+
+8
+
+UPDATE HES a
+SET "health_situation" = "risky" FROM person e
+WHERE a."phoneNumber" = 05534849876 AND a."personId"=e."personid"
+
+9
+
+DELETE
+FROM person
+	USING HES
+WHERE person."age" > 65 AND
+	HES."vacInfo" = 'unvaccinated'
+
+DELETE FROM person
+	WHERE person."age" > 65 AND person."personid" IN (
+			SELECT HES."personId"
+			FROM HES
+			WHERE HES."vacInfo" = 'unvaccinated');
+
+10
+
+insert into vaccine("vaccinename","country")
+values('Sputnik-V','Russian');
